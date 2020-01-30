@@ -40,25 +40,25 @@ init.initialState.zenroom.config = configuration
 // 	.zenroom_exec()
 
 // load all .zen contracts found in ./zencode directory
-const zencode_path = path.join(__dirname, 'zencode');
-let contracts = { }
-fs.readdir(zencode_path, function (err, files) {
-    if (err) { return console.log('Unable to scan directory: ' + err) } 
-    files.forEach(function (file) {
-		if(path.extname(file) == '.zen') {
-			console.log("load zencode: %s",file); 
-			contracts[path.basename(file,'.zen')] =
-				fs.readFileSync(path.join(zencode_path,file),enc)
-		}
-    });
-});
-init.initialState.contracts = contracts
+// const zencode_path = path.join(__dirname, 'zencode');
+// let contracts = { }
+// fs.readdir(zencode_path, function (err, files) {
+//     if (err) { return console.log('Unable to scan directory: ' + err) } 
+//     files.forEach(function (file) {
+// 		if(path.extname(file) == '.zen') {
+// 			console.log("load zencode: %s",file); 
+// 			contracts[path.basename(file,'.zen')] =
+// 				fs.readFileSync(path.join(zencode_path,file),enc)
+// 		}
+//     });
+// });
+// init.initialState.contracts = contracts
 
 let app = lotion(init)
 
 
 function transactionHandler(state, transaction, ctx) {
-	let contract = state.contracts[transaction.contract]
+	let contract = transaction.contract // state.contracts[transaction.contract]
 	if( ! contract ) return false
 
 	// print some info on the execution
@@ -69,7 +69,6 @@ function transactionHandler(state, transaction, ctx) {
 	// prepare output buffer
     let result = []
 	const printFunction = text => { result.push(text) }
-    const errFunction = text => { }
 
 	// actual call to zencode_exec
 	zenroom.script(contract)
@@ -92,4 +91,7 @@ function transactionHandler(state, transaction, ctx) {
 
 app.use(transactionHandler)
 
-app.start().then(appInfo => console.log(appInfo.GCI))
+app.start().then(appInfo => { 
+	console.log(appInfo.GCI)
+	fs.writeFileSync(".gci", appInfo.GCI)
+})
