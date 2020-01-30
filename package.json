@@ -1,0 +1,15 @@
+{
+  "name": "lotion-zencode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lotion": "^0.4.26",
+    "zenroom": "^1.0.0"
+  }
+}

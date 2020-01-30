@@ -1,0 +1,3 @@
+Given nothing
+When I write 'Hello World!' in 'message'
+Then print the 'message' as 'string'
