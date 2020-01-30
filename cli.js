@@ -59,11 +59,10 @@ async function main() {
     try {
       const data = read_json(process.argv[3])
       const keys = read_json(process.argv[4])
-      const contract = read_file(process.argv[5])
       let tx = {
         "keys": keys,
         "data": data,
-        "contract": contract
+        "contract": process.argv[5]
       }
       console.log(`Sending a Transaction to ${gci} with the following: \n\n ${JSON.stringify(tx)} \n\n`)
       console.log(JSON.stringify(await send(tx), null, 2))
