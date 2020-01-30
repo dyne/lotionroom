@@ -49,8 +49,8 @@ const read_gci = () => {
 
 
 async function main() {
-  if (process.argv[2] === 'state' && process.argv.length === 4) {
-    let { state } = await connect(process.argv[3])
+  if (process.argv[2] === 'state') {
+    let { state } = await connect(read_gci())
     console.log(JSON.stringify(await state, null, 2))
     process.exit()
   } else if (process.argv[2] === 'send' && process.argv.length === 6) {
