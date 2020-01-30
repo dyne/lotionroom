@@ -79,13 +79,6 @@ function transactionHandler(state, transaction, ctx) {
 		.print_err(text => { true })
 		.print(printFunction)
 		.zencode_exec()
-	// TODO: zencode_exec returns error on contract string?
-	// Invalid function pointer called with signature 'iii'. Perhaps
-	// this is an invalid value (e.g. caused by calling a virtual
-	// method on a NULL pointer)? Or calling a function with an
-	// incorrect type, which will fail? (it is worth building your
-	// source files with -Werror (warnings are errors), as warnings
-	// can indicate undefined behavior which can cause this)
 
 	// updates the state with the result
     state.zenroom_result = result
@@ -95,5 +88,5 @@ app.use(transactionHandler)
 
 app.start().then(appInfo => { 
 	console.log(appInfo.GCI)
-	fs.writeFileSync(".gci", appInfo.GCI)
+	fs.writeFileSync("genesis.gci", appInfo.GCI)
 })

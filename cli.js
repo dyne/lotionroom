@@ -41,9 +41,9 @@ const read_json = filename => {
 
 const read_gci = () => {
   try {
-    return read_file(".gci")
+    return read_file("genesis.gci")
   } catch (e) {
-    console.log('.gci file not found!\n\nIs the node runnig?\n\nAre you in the right folder?')
+    console.log('genesis.gci file not found!\n\nIs the node runnig?\n\nAre you in the right folder?')
   }
 }
 
