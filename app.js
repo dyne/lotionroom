@@ -27,9 +27,9 @@ let path = require('path')
 // initialization
 let init = { initialState: { zenroom: { } } }
 zenroom.script("print(VERSION.original)")
-	.print(text => { init.initialState.zenroom.version = text.trim() })
-	.print_err(text => { })
-	.zenroom_exec()
+    .print(text => { init.initialState.zenroom.version = text.trim() })
+    .print_err(text => { })
+    .zenroom_exec()
 // configuration
 const enc = { encoding: 'utf8' }
 const configuration = fs.readFileSync('zenroom.rc', enc).trim()
@@ -37,20 +37,20 @@ init.initialState.zenroom.config = configuration
 // // random salt
 // TODO: overwrites version?! problem with double zenroom execution?
 // zenroom.script("print(OCTET.random(32))")
-// 	.print(text => { init.initialState.zenroom.salt = text.trim() })
-// 	.zenroom_exec()
+//  .print(text => { init.initialState.zenroom.salt = text.trim() })
+//  .zenroom_exec()
 
 // load all .zen contracts found in ./zencode directory
 const zencode_path = path.join(__dirname, 'zencode');
 let contracts = { }
 fs.readdir(zencode_path, function (err, files) {
-    if (err) { return console.log('Unable to scan directory: ' + err) } 
+    if (err) { return console.log('Unable to scan directory: ' + err) }
     files.forEach(function (file) {
-		if(path.extname(file) == '.zen') {
-			console.log("load zencode: %s",file); 
-			contracts[path.basename(file,'.zen')] =
-				fs.readFileSync(path.join(zencode_path,file),enc)
-		}
+        if(path.extname(file) == '.zen') {
+            console.log("load zencode: %s",file);
+            contracts[path.basename(file,'.zen')] =
+                fs.readFileSync(path.join(zencode_path,file),enc)
+        }
     });
 });
 init.initialState.contracts = contracts
@@ -59,34 +59,34 @@ let app = lotion(init)
 
 
 function transactionHandler(state, transaction, ctx) {
-	let contract = transaction.contract // state.contracts[transaction.contract]
-	if( ! contract ) return false
+    let contract = transaction.contract // state.contracts[transaction.contract]
+    if( ! contract ) return false
 
-	// print some info on the execution
-	console.log(ctx.time)
-	console.log(state.zenroom.salt)
-	console.log(contract)
+    // print some info on the execution
+    console.log(ctx.time)
+    console.log(state.zenroom.salt)
+    console.log(contract)
 
-	// prepare output buffer
+    // prepare output buffer
     let result = []
-	const printFunction = text => { result.push(text) }
+    const printFunction = text => { result.push(text) }
 
-	// actual call to zencode_exec
-	zenroom.script(state.contracts[contract])
-		.conf(state.zenroom.config)
-		.data(transaction.data)
-		.keys(transaction.keys)
-		.print_err(text => { true })
-		.print(printFunction)
-		.zencode_exec()
+    // actual call to zencode_exec
+    zenroom.script(state.contracts[contract])
+        .conf(state.zenroom.config)
+        .data(transaction.data)
+        .keys(transaction.keys)
+        .print_err(text => { true })
+        .print(printFunction)
+        .zencode_exec()
 
-	// updates the state with the result
+    // updates the state with the result
     state.zenroom_result = result
 }
 
 app.use(transactionHandler)
 
-app.start().then(appInfo => { 
-	console.log(appInfo.GCI)
-	fs.writeFileSync("genesis.gci", appInfo.GCI)
+app.start().then(appInfo => {
+    console.log(appInfo.GCI)
+    fs.writeFileSync("genesis.gci", appInfo.GCI)
 })
