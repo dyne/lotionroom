@@ -53,24 +53,25 @@ async function main() {
     let { state } = await connect(read_gci())
     console.log(JSON.stringify(await state, null, 2))
     process.exit()
-  } else if (process.argv[2] === 'send' && process.argv.length === 6) {
+  } else if (process.argv[2] === 'send') {
     const gci = read_gci()
     let { send } = await connect(gci)
-    try {
-      const data = read_json(process.argv[3])
-      const keys = read_json(process.argv[4])
-      let tx = {
-        "keys": keys,
-        "data": data,
-        "contract": process.argv[5]
+	  const contract = process.argv[3]
+      try {
+		  const data = process.argv[4]?read_json(process.argv[4]):null
+		  const keys = process.argv[5]?read_json(process.argv[4]):null
+		  let tx = {
+			  "keys": keys,
+			  "data": data,
+			  "contract": contract
+		  }
+		  console.log(`Sending a Transaction to ${gci} with the following: \n\n ${JSON.stringify(tx)} \n\n`)
+		  console.log(JSON.stringify(await send(tx), null, 2))
+		  process.exit()
+      } catch (e) {
+		  console.log('malformed JSON. try like this:')
+		  console.log('$ lotion send <gci> \'{ "foo": "bar" }\'')
       }
-      console.log(`Sending a Transaction to ${gci} with the following: \n\n ${JSON.stringify(tx)} \n\n`)
-      console.log(JSON.stringify(await send(tx), null, 2))
-      process.exit()
-    } catch (e) {
-      console.log('malformed JSON. try like this:')
-      console.log('$ lotion send <gci> \'{ "foo": "bar" }\'')
-    }
   } else if (process.argv.length < 3) {
     console.log(
       `
