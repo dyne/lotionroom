@@ -19,60 +19,85 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 let connect = require('lotion-connect')
+let YAML = require('yaml')
 var fs = require('fs');
 
 const read_file = filename => {
-	try {
-		return fs.readFileSync(filename, 'utf8')
-	} catch (e) {
-		console.log(`File '${filename}' NOT FOUND!`)
-	}
+    try {
+        return fs.readFileSync(filename, 'utf8')
+    } catch (e) {
+        console.log(`File '${filename}' NOT FOUND!`)
+    }
 }
 
 const read_json = filename => {
-	try {
-		return JSON.parse(read_file(filename));
-	} catch (e) {
-		console.log('malformed JSON. try like this:')
-		console.log('{ "foo": "bar" }\n\n\n')
-		console.error(e.message);
-	}
+    try {
+        return JSON.parse(read_file(filename));
+    } catch (e) {
+        console.log('malformed JSON. try like this:')
+        console.log('{ "foo": "bar" }\n\n\n')
+        console.error(e.message);
+    }
 }
 
 const read_gci = () => {
-	try {
-		return read_file("genesis.gci")
-	} catch (e) {
-		console.log('genesis.gci file not found!\n\nIs the node runnig?\n\nAre you in the right folder?')
-	}
+    try {
+        return read_file("genesis.gci")
+    } catch (e) {
+        console.log('genesis.gci file not found!\n\nIs the node runnig?\n\nAre you in the right folder?')
+    }
 }
 
-
+let cx
 async function main() {
-	if (process.argv[2] === 'state') {
-		let { state } = await connect(read_gci())
-		console.log(JSON.stringify(await state, null, 2))
+    switch(process.argv[2]) {
+    case 'context':
+        cx = await connect(read_gci())
+        console.log(YAML.stringify(await cx.state))
+        process.exit()
+        break;
+
+    case 'version':
+        cx = await connect(read_gci())
+        console.log(YAML.stringify(await cx.state.zenroom))
+        process.exit()
+        break;
+
+	case 'api':
+		cx = await connect(read_gci())
+		// const api = await cx.state.contracts
+		console.log(YAML.stringify(await cx.state.contracts))
 		process.exit()
-	} else if (process.argv[2] === 'send') {
-		const gci = read_gci()
-		let { send } = await connect(gci)
-		const contract = process.argv[3]
-		try {
-			const data = process.argv[4]?read_json(process.argv[4]):null
-			const keys = process.argv[5]?read_json(process.argv[4]):null
-			let tx = {
-				"keys": keys,
-				"data": data,
-				"contract": contract
-			}
-			console.log(`Sending a Transaction to ${gci} with the following: \n\n ${JSON.stringify(tx)} \n\n`)
-			console.log(JSON.stringify(await send(tx), null, 2))
+		break;
+
+	case 'state':
+		cx = await connect(read_gci())
+		// const api = await cx.state.contracts
+		console.log(YAML.stringify(await cx.state.current))
+		process.exit()
+		break;
+
+    case 'send':
+        const gci = read_gci()
+        let { send } = await connect(gci)
+        const contract = process.argv[3]
+        try {
+            const data = process.argv[4]?read_json(process.argv[4]):null
+            const keys = process.argv[5]?read_json(process.argv[4]):null
+            let tx = {
+				"contract": contract,
+                "keys": keys,
+                "data": data }
+			console.log(`To ${gci}:\n${YAML.stringify(tx)}`)
+			console.log(`Reply:\n${YAML.stringify(await send(tx))}\n`)
 			process.exit()
 		} catch (e) {
 			console.log('malformed JSON. try like this:')
 			console.log('$ lotion send <gci> \'{ "foo": "bar" }\'')
 		}
-	} else if (process.argv.length < 3) {
+		break;
+
+    default:
 		console.log(
 			`
   Usage:
@@ -81,6 +106,7 @@ async function main() {
     $ lotion send <data-filename.json> <keys-filename.json> <zencode-filename.zen>    Send a zencode transaction to a running app
       `
 		)
+
 	}
 }
 

@@ -22,23 +22,28 @@ let lotion = require('lotion')
 let zenroom = require('zenroom')
 let fs = require('fs')
 let path = require('path')
+const enc = { encoding: 'utf8' }
 
 
 // initialization
-let init = { initialState: { zenroom: { } } }
-zenroom.script("print(VERSION.original)")
-    .print(text => { init.initialState.zenroom.version = text.trim() })
+let init = { initialState: { } }
+// zenroom: { } } }
+let zconf = { }
+
+zconf.config = fs.readFileSync('zenroom.rc', enc).trim()
+// version
+zenroom.script("write(VERSION.original)")
+    .print(text => { zconf.version = text
+					 console.log(`Zenroom version: ${zconf.version}`) })
     .print_err(text => { })
     .zenroom_exec()
-// configuration
-const enc = { encoding: 'utf8' }
-const configuration = fs.readFileSync('zenroom.rc', enc).trim()
-init.initialState.zenroom.config = configuration
-// // random salt
-// TODO: overwrites version?! problem with double zenroom execution?
-// zenroom.script("print(OCTET.random(32))")
-//  .print(text => { init.initialState.zenroom.salt = text.trim() })
-//  .zenroom_exec()
+// random salt
+zenroom.script("write(OCTET.random(32))")
+	.print(text => { zconf.salt = text
+					 console.log(`Salt: ${zconf.salt}`) })
+	.zenroom_exec()
+
+init.initialState.zenroom = zconf
 
 // load all .zen contracts found in ./zencode directory
 const zencode_path = path.join(__dirname, 'zencode');
@@ -64,7 +69,7 @@ function transactionHandler(state, transaction, ctx) {
 
     // print some info on the execution
     console.log(ctx.time)
-    console.log(state.zenroom.salt)
+    // console.log(state.zenroom.salt)
     console.log(contract)
 
     // prepare output buffer
@@ -81,7 +86,7 @@ function transactionHandler(state, transaction, ctx) {
         .zencode_exec()
 
     // updates the state with the result
-    state.zenroom_result = result
+    state.current = result
 }
 
 app.use(transactionHandler)
