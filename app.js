@@ -28,6 +28,7 @@ let path = require('path')
 let init = { initialState: { zenroom: { } } }
 zenroom.script("print(VERSION.original)")
 	.print(text => { init.initialState.zenroom.version = text.trim() })
+	.print_err(text => { })
 	.zenroom_exec()
 // configuration
 const enc = { encoding: 'utf8' }
@@ -75,6 +76,7 @@ function transactionHandler(state, transaction, ctx) {
 		.conf(state.zenroom.config)
 		.data(transaction.data)
 		.keys(transaction.keys)
+		.print_err(text => { true })
 		.print(printFunction)
 		.zencode_exec()
 	// TODO: zencode_exec returns error on contract string?
