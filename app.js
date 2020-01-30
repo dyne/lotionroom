@@ -19,9 +19,10 @@
 
 // deps
 let lotion = require('lotion')
-let zenroom = require('zenroom').default
+let zenroom = require('zenroom')
 let fs = require('fs')
 let path = require('path')
+
 
 // initialization
 let init = { initialState: { zenroom: { } } }
@@ -55,6 +56,7 @@ init.initialState.contracts = contracts
 
 let app = lotion(init)
 
+
 function transactionHandler(state, transaction, ctx) {
 	let contract = state.contracts[transaction.contract]
 	if( ! contract ) return false
@@ -66,7 +68,8 @@ function transactionHandler(state, transaction, ctx) {
 
 	// prepare output buffer
     let result = []
-	const printFunction = (text) => { result.push(text) }
+	const printFunction = text => { result.push(text) }
+    const errFunction = text => { }
 
 	// actual call to zencode_exec
 	zenroom.script(contract)
