@@ -83,18 +83,20 @@ async function main() {
         const contract = process.argv[3]
         try {
             const data = process.argv[4]?read_json(process.argv[4]):null
-            const keys = process.argv[5]?read_json(process.argv[4]):null
+            const keys = process.argv[5]?read_json(process.argv[5]):null
             let tx = {
 				"contract": contract,
                 "keys": keys,
                 "data": data }
 			console.log(`To ${gci}:\n${YAML.stringify(tx)}`)
-			console.log(`Reply:\n${YAML.stringify(await send(tx))}\n`)
+			const res = await send(tx)
+			console.log(`Reply:\n${YAML.stringify(res)}\n`)
 			process.exit()
 		} catch (e) {
 			console.log('malformed JSON. try like this:')
 			console.log('$ lotion send <gci> \'{ "foo": "bar" }\'')
 		}
+		process.exit()
 		break;
 
     default:

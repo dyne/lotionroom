@@ -31,17 +31,18 @@ let init = { initialState: { } }
 let zconf = { }
 
 zconf.config = fs.readFileSync('zenroom.rc', enc).trim()
+
 // version
-zenroom.script("write(VERSION.original)")
-    .print(text => { zconf.version = text
-					 console.log(`Zenroom version: ${zconf.version}`) })
-    .print_err(text => { })
-    .zenroom_exec()
+// zenroom.script("write(VERSION.original)")
+//     .print(text => { zconf.version = text
+// 					 console.log(`Zenroom version: ${zconf.version}`) })
+//     .print_err(text => { })
+//     .zenroom_exec()
 // random salt
-zenroom.script("write(OCTET.random(32))")
-	.print(text => { zconf.salt = text
-					 console.log(`Salt: ${zconf.salt}`) })
-	.zenroom_exec()
+// zenroom.script("write(OCTET.random(32))")
+// 	.print(text => { zconf.salt = text
+// 					 console.log(`Salt: ${zconf.salt}`) })
+// 	.zenroom_exec()
 
 init.initialState.zenroom = zconf
 
@@ -75,13 +76,13 @@ function transactionHandler(state, transaction, ctx) {
     // prepare output buffer
     let result = []
     const printFunction = text => { result.push(text) }
-
+	console.log(transaction)
     // actual call to zencode_exec
     zenroom.script(state.contracts[contract])
         .conf(state.zenroom.config)
         .data(transaction.data)
         .keys(transaction.keys)
-        .print_err(text => { true })
+        .print_err(text => { console.err(text) })
         .print(printFunction)
         .zencode_exec()
 
