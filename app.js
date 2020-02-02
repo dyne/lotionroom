@@ -80,7 +80,7 @@ function transactionHandler(state, transaction, ctx) {
     // actual call to zencode_exec
     zenroom.script(state.contracts[contract])
         .conf(state.zenroom.config)
-        .data(transaction.data)
+        .data(JSON.stringify(transaction.data))
         .keys(transaction.keys)
         .print_err(text => { console.err(text) })
         .print(printFunction)
