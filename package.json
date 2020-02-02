@@ -14,7 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "lotion": "^0.4.26",
-    "zenroom": "^1.0.2",
-    "yaml": "^1.7.2"
+    "yaml": "^1.7.2",
+    "zenroom": "^1.0.3"
   }
 }
