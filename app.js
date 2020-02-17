@@ -32,18 +32,6 @@ let zconf = { }
 
 zconf.config = fs.readFileSync('zenroom.rc', enc).trim()
 
-// version
-// zenroom.script("write(VERSION.original)")
-//     .print(text => { zconf.version = text
-// 					 console.log(`Zenroom version: ${zconf.version}`) })
-//     .print_err(text => { })
-//     .zenroom_exec()
-// random salt
-// zenroom.script("write(OCTET.random(32))")
-// 	.print(text => { zconf.salt = text
-// 					 console.log(`Salt: ${zconf.salt}`) })
-// 	.zenroom_exec()
-
 init.initialState.zenroom = zconf
 
 // load all .zen contracts found in ./zencode directory

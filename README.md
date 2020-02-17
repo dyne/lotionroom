@@ -58,7 +58,18 @@ npm -g install .
 ***
 ## 🎮 Quick start
 
-To start using lotionroom just run `lr`
+Place all zencode contracts in the `zencode` directory
+
+Start the node with `nodejs app.js` (creates or uses already existing `genesis.gci`)
+
+Call the client using the `lr` command, for instance:
+- `lr context`: list all the configured contracts
+- `lr state`: shows the currently saved state
+- `lr send <data> <keys>`: sends a transaction with json files
+
+For a quick test round of zero-knowledge proof credential authentication:
+`cd test && ./zkauth.sh`
+Then watch the logs...
 
 ***
 ## 😍 Acknowledgements
