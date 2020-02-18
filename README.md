@@ -54,6 +54,7 @@ cd lotionroom
 npm -g install .
 ```
 
+Needs Nodejs < 12
 
 ***
 ## 🎮 Quick start
@@ -70,6 +71,8 @@ Call the client using the `lr` command, for instance:
 For a quick test round of zero-knowledge proof credential authentication:
 `cd test && ./zkauth.sh`
 Then watch the logs...
+
+**NB** This needs the zenroom cli binary in your path. Downloads [here](https://dev.zenroom.org/#download). 
 
 ***
 ## 😍 Acknowledgements
