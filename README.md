@@ -60,7 +60,7 @@ npm -g install .
 
 Place all zencode contracts in the `zencode` directory
 
-Start the node with `nodejs app.js` (creates or uses already existing `genesis.gci`)
+Start the node with `npm run start` (creates or uses already existing `genesis.gci`)
 
 Call the client using the `lr` command, for instance:
 - `lr context`: list all the configured contracts
